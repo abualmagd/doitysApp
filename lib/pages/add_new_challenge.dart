@@ -383,16 +383,11 @@ import 'package:doitys/formates/date_extension.dart';
                                 Navigator.pop(context);
                                 if(_image!=null){
                                   //upload image if image not null
-                                  String? _imageUrl;
                                   api.uploadImage(file: _image!, bucket:'images').then((value) {
 
                                     vic.updateImageUrl(value);
-                                    print(vic.imageUrl);
-
 
                                   }).whenComplete(() {
-
-                                    print(_imageUrl);
                                     Challenge ch = Challenge(
                                       title: _titleController!.text.toString(),
                                       content: _contentController!.text.toString(),

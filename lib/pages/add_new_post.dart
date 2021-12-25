@@ -2,8 +2,10 @@
 import 'dart:io';
 
 import 'package:better_player/better_player.dart';
+import 'package:doitys/data_api/data.dart';
 import 'package:doitys/data_api/post_controller.dart';
 import 'package:doitys/global/better_player.dart';
+import 'package:doitys/global/video_image_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,6 +21,8 @@ class GroupPost extends StatefulWidget {
 class _GroupPostState extends State<GroupPost> {
   File? _video;
   final picker = ImagePicker();
+  final DataServices api =DataServices();
+  final vic=Get.put(ViController());
   final TextEditingController _textController=TextEditingController();
   final _postController=Get.put(PostController());
   Future getVideo() async {
@@ -227,17 +231,41 @@ class _GroupPostState extends State<GroupPost> {
                   splashColor: Colors.green,
                   onTap: (){
                     ///publish post now
+                    Navigator.pop(context);
                     if(_textController.text.isNotEmpty){
-                      if(_video!=null){
+                      if(_video!=null&&_image==null){
 
+                        api.uploadVideo(file: _video!, bucket: "videos").then((value) {
+                        vic.updateVideoUrl(value);
+                        }).whenComplete((){
+                          _postController.addNewPost(challengeId:widget.challengeId, content:_textController.text.trim(),
+                              image:vic.videoUrl, video: null);
+                        }).catchError((r){
+                          Get.snackbar("hi", r.toString(),
+                              backgroundColor: Colors.red);
+                        });
 
                       }
-                      if(_image!=null){
+                      if(_image!=null&&_video==null){
 
+                       api.uploadImage(file: _image!, bucket: 'images').then((value) {
+                         vic.updateImageUrl(value);
+                       }).whenComplete((){
+                         _postController.addNewPost(challengeId:widget.challengeId, content:_textController.text.trim(),
+                             image:vic.imageUrl, video: null);
+                       }).catchError((r){
+                         Get.snackbar("hi", r.toString(),
+                             backgroundColor: Colors.red);
+                       });
+
+
+
+                      }else{
+                        _postController.addNewPost(challengeId:widget.challengeId, content:_textController.text.trim(),
+                            image: null, video: null);
                       }
 
-                    _postController.addNewPost(challengeId:widget.challengeId, content:_textController.text.trim(),
-                        image: _image, video: _video);
+
 
                     }
                   },

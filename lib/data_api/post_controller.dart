@@ -67,7 +67,8 @@ class PostController extends GetxController{
    }).execute();
    if(res.error==null){
      Post newPost=Post(id:res.data[0]['id'],challengeId:challengeId ,content:content ,image:image ,video:video ,creatorId:authorController.currentAuthor.id,
-     created: DateTime.now(),creatorAvatar: authorController.currentAuthor.avatar,creatorDisplay: authorController.currentAuthor.display,
+     created: DateTime.now(),creatorAvatar: authorController.currentAuthor.avatar,creatorDisplay: authorController.currentAuthor.display,liked: false,likesCount: 0,
+     commentsCount: 0,
      creatorName: authorController.currentAuthor.name);
     if(newPost.challengeId==null){
       postList.insert(0,newPost);
