@@ -22,9 +22,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'image_view.dart';
 
 class ChallengePage extends StatefulWidget {
-  final scrollController;
+  final ScrollController scrollController;
 
-  const ChallengePage({required Key key, this.scrollController}) : super(key: key);
+  const ChallengePage({required Key key, required this.scrollController}) : super(key: key);
 
 
 
@@ -40,9 +40,9 @@ class _ChallengePageState extends State<ChallengePage> {
     super.initState();
   }
 
-  var challengeControl=Get.put(ChallengeController());
-  var notificationController=Get.put(NotificationController());
-  var _authorControl=Get.put(AuthorController());
+  final challengeControl=Get.put(ChallengeController());
+  final notificationController=Get.put(NotificationController());
+  final _authorControl=Get.put(AuthorController());
 
   Future getUserThenNavigate(var id)async{
     try {
@@ -65,7 +65,7 @@ class _ChallengePageState extends State<ChallengePage> {
               icon: Icon(Icons.scatter_plot_rounded,color:Theme.of(context).shadowColor),
               onPressed: () {
                  Navigator.push(context, MaterialPageRoute(builder:(BuildContext context){
-                   return PublicPostPage();
+                   return const PublicPostPage();
                  }));
 
                 /*  Navigator.of(context).pushReplacement(MaterialPageRoute(builder:(BuildContext context){
@@ -77,7 +77,6 @@ class _ChallengePageState extends State<ChallengePage> {
             Get.changeTheme(Get.isDarkMode? Themes.light: Themes.dark);
               var _prefs=await SharedPreferences.getInstance();
               bool isDark=!Get.isDarkMode;
-              print(isDark);
               _prefs.setBool('isDark', isDark);
             }, icon:Icon(Icons.nightlight_round,color:Theme.of(context).shadowColor))
           ],

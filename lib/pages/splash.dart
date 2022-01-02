@@ -2,7 +2,6 @@ import 'package:doitys/data_api/auth.dart';
 import 'package:doitys/pages/complete_profile.dart';
 import 'package:doitys/pages/log_in_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:supabase/supabase.dart';
 import 'home.dart';
@@ -19,8 +18,9 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
 
   var auth=AuthUtil();
-  var _client;
- void initState() {
+  SupabaseClient? _client;
+ @override
+  void initState() {
 
 
     _client=Get.find<SupabaseClient>();
@@ -29,30 +29,28 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void>_redirect()async{
-   Future.delayed(Duration(microseconds: 20));
+   Future.delayed(const Duration(microseconds: 20));
 
     var _recoverd= await auth.recoverSession();
 
      if(_recoverd==false){
-
-       print(' ////// 1  ////////');
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext _){
           return LoginPage();
         }));
      } else if (_recoverd==true) {
-       String? userId = _client.auth.currentUser!.id;
+       String? userId = _client!.auth.currentUser!.id;
        final completeProfile = await auth.isProfileComplete(userId: userId);
        if (completeProfile == null) {
-         print("2");
+
          Navigator.pushReplacement(
              context, MaterialPageRoute(builder: (BuildContext _) {
-           return CompleteProfile();
+           return const CompleteProfile();
          }));
        }
 
        Navigator.pushReplacement(
            context, MaterialPageRoute(builder: (BuildContext _) {
-         return MyHomePage();
+         return const MyHomePage();
        }));
      }else{
        Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext _){
@@ -73,7 +71,8 @@ class _SplashPageState extends State<SplashPage> {
           fit: BoxFit.fill
         )
       ),*/
-      child: Center(child: CircularProgressIndicator(color: Colors.white,),),
+      child: const Center(child: LinearProgressIndicator(color: Colors.blue,backgroundColor: Colors.white,
+      ),),
     );
   }
 

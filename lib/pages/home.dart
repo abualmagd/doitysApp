@@ -73,10 +73,10 @@ void dispose(){
     List<Color> _profileColor=[d,d,d,c];
 
     List _tabs=[
-    ChallengePage(scrollController:homeScrollController, key: UniqueKey(),),
+    ChallengePage(scrollController:homeScrollController!, key: UniqueKey(),),
     MyTimeLine(controller:userChallengeScrollController,key: UniqueKey()),
       NotifyPage(controller:notifyController, key: UniqueKey(),),
-      ProfilePage(),
+      const ProfilePage(),
   ];
 return
   Builder(
@@ -137,7 +137,7 @@ return
                       padding: const EdgeInsets.only(bottom:5.0),
                       child: IconButton(icon: const FaIcon(FontAwesomeIcons.solidPlusSquare,size:36,), onPressed:(){
 
-                        Navigator.of(context).push(bottomSideSlideTransition(AddingNew()));
+                        Navigator.of(context).push(bottomSideSlideTransition(const AddingNew()));
                       }),
                     ),
                     Stack(
