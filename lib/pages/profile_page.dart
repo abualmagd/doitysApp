@@ -9,7 +9,6 @@ import 'package:doitys/formates/number_formates.dart';
 import 'package:doitys/global/better_player.dart';
 import 'package:doitys/global/profile_background_path.dart';
 import 'package:doitys/pages/settings.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -26,6 +25,8 @@ import 'package:doitys/data_api/user_controller.dart';
 import 'package:doitys/formates/date_extension.dart';
 
 class ProfilePage extends StatefulWidget {
+  const ProfilePage({Key? key}) : super(key: key);
+
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
@@ -37,7 +38,7 @@ class _ProfilePageState extends State<ProfilePage>
 
   final picker = ImagePicker();
   File? _image;
-  var _postController =Get.put(PostController());
+  final _postController =Get.put(PostController());
 
   Future getImage() async {
     final _pikedFile = await picker.getImage(
@@ -50,8 +51,7 @@ class _ProfilePageState extends State<ProfilePage>
 
     return _image;
   }
-
-  var cc;
+  AuthorController? cc;
 
   @override
   void initState() {
@@ -59,10 +59,10 @@ class _ProfilePageState extends State<ProfilePage>
     cc = Get.put(AuthorController());//author controller
     _postController.getUserPosts();
     _editDisplayController =
-        TextEditingController(text: cc.currentAuthor.display);
-    _editBioController = TextEditingController(text: cc.currentAuthor.bio);
+        TextEditingController(text: cc!.currentAuthor.display);
+    _editBioController = TextEditingController(text: cc!.currentAuthor.bio);
     _editWebsiteController =
-        TextEditingController(text: cc.currentAuthor.website);
+        TextEditingController(text: cc!.currentAuthor.website);
 
   }
 
@@ -85,7 +85,7 @@ class _ProfilePageState extends State<ProfilePage>
         numberFormatting.compact(getCon.currentAuthor.followerCount ?? 0);
     String _following =
         numberFormatting.compact(getCon.currentAuthor.followingCount ?? 0);
-      print('all class rebuilded');
+
     return Scaffold(
       backgroundColor: context.theme.backgroundColor,
       body:Obx(()=>getCon.currentAuthor.name != null? NestedScrollView(
@@ -116,8 +116,8 @@ class _ProfilePageState extends State<ProfilePage>
                     }),
               ],
               flexibleSpace: AnnotatedRegion<SystemUiOverlayStyle>(
-                value: SystemUiOverlayStyle(
-                  systemNavigationBarColor: const Color(0xfff4f0db),
+                value:const  SystemUiOverlayStyle(
+                  systemNavigationBarColor:  Color(0xfff4f0db),
                   statusBarColor: Colors.transparent,
                 ),
                 child: FlexibleSpaceBar(
@@ -128,7 +128,7 @@ class _ProfilePageState extends State<ProfilePage>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
+                          SizedBox(
                             height: 160, //photo area
                             child: Stack(children: [
                               CurvedGround(
@@ -156,7 +156,7 @@ class _ProfilePageState extends State<ProfilePage>
                                     },
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(35),
-                                      child: Container(
+                                      child: SizedBox(
                                         child: Hero(
                                           tag: "tag" + "232323".toString(),
                                           transitionOnUserGestures: true,
@@ -173,12 +173,12 @@ class _ProfilePageState extends State<ProfilePage>
                                                     repeat: ImageRepeat.repeat,
                                                     placeholder:
                                                         (context, url) =>
-                                                            ColoredBox(
+                                                            const ColoredBox(
                                                       color: Colors.grey,
                                                     ),
                                                     errorWidget: (context, url,
                                                             error) =>
-                                                        ColoredBox(
+                                                        const ColoredBox(
                                                             color: Colors.grey,
                                                             child: Icon(
                                                                 Icons.error)),
@@ -202,7 +202,7 @@ class _ProfilePageState extends State<ProfilePage>
                                 child: Visibility(
                                   visible: _editable,
                                   child: IconButton(
-                                      icon: Icon(
+                                      icon: const Icon(
                                         Icons.camera_alt,
                                         size: 40,
                                       ),
@@ -215,27 +215,25 @@ class _ProfilePageState extends State<ProfilePage>
                                               setState(() {
                                                 _editable = !_editable;
                                               });
-                                              print(_image);
+
                                         var response=      await getCon.uploadImage(
                                                                     file: _image!,
                                                                       bucket: 'profiles');
-                                        print(response);
+
                                                   if(response!=null) {
                                                     var _result = await getCon
                                                         .updateAvatar(
                                                         url: response);
-                                                    if (_result == true)
-                                                      Future.delayed(
-                                                          Duration(seconds:3));
-                                                        print(_result);
-                                                    await getCon
+                                                    if (_result == true) {
+                                                      await getCon
                                                         .getCurrentAuthor();
+                                                    }
                                                   }
 
 
                                             }));
 
-                                        print(" edit image");
+
                                       }),
                                 ),
                               ),
@@ -251,7 +249,7 @@ class _ProfilePageState extends State<ProfilePage>
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Container(
+                                    SizedBox(
                                       height: 40,
                                       child: Row(
                                         mainAxisAlignment:
@@ -261,13 +259,13 @@ class _ProfilePageState extends State<ProfilePage>
                                             child: Obx(() => Text(
                                                   "${getCon.currentAuthor.display}",
                                                   style:
-                                                      TextStyle(fontSize: 18),
+                                                      const TextStyle(fontSize: 18),
                                                 )),
                                           ),
                                           Visibility(
                                             visible: _editable,
                                             child: IconButton(
-                                                icon: Icon(
+                                                icon: const Icon(
                                                   Icons.edit,
                                                 ),
                                                 onPressed: () {
@@ -286,7 +284,7 @@ class _ProfilePageState extends State<ProfilePage>
                                                               context);
 
                                                           Future.delayed(
-                                                              Duration(
+                                                              const Duration(
                                                                   microseconds:
                                                                       300), () {
                                                             getCon
@@ -308,7 +306,6 @@ class _ProfilePageState extends State<ProfilePage>
                                                     setState(() {
                                                       _editable = !_editable;
                                                     });
-                                                    print(" edit display name");
                                                   }, 30);
                                                 }),
                                           ),
@@ -322,7 +319,6 @@ class _ProfilePageState extends State<ProfilePage>
                                                 onTap: () {
                                                   setState(() {
                                                     _editable = !_editable;
-                                                    print(_editable);
                                                   });
                                                 },
                                                 child: Ink(
@@ -339,7 +335,7 @@ class _ProfilePageState extends State<ProfilePage>
                                                     border: Border.all(
                                                         color: Colors.white),
                                                   ),
-                                                  child: Center(
+                                                  child:const Center(
                                                       child: Text(
                                                     "Edit",
                                                     style: TextStyle(
@@ -364,7 +360,7 @@ class _ProfilePageState extends State<ProfilePage>
                                     Padding(
                                       padding: const EdgeInsets.only(
                                           top: 4, bottom: 4),
-                                      child: Container(
+                                      child: SizedBox(
                                         width:
                                             MediaQuery.of(context).size.width *
                                                 .80,
@@ -377,13 +373,13 @@ class _ProfilePageState extends State<ProfilePage>
                                                   getCon.currentAuthor.bio
                                                       .toString(),
                                                   style:
-                                                      TextStyle(fontSize: 15),
+                                                      const TextStyle(fontSize: 15),
                                                   maxLines: 2,
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                 ),
                                               )
-                                            : Text(
+                                            : const Text(
                                                 "Write something about you",
                                                 style: TextStyle(fontSize: 15),
                                                 maxLines: 2,
@@ -393,7 +389,7 @@ class _ProfilePageState extends State<ProfilePage>
                                     Visibility(
                                       visible: _editable,
                                       child: IconButton(
-                                          icon: Icon(Icons.edit),
+                                          icon: const Icon(Icons.edit),
                                           onPressed: () {
                                             //show alert dialog for editing bio
                                             showEditableAlert(
@@ -407,7 +403,7 @@ class _ProfilePageState extends State<ProfilePage>
                                                 Navigator.pop(context);
 
                                                 Future.delayed(
-                                                  Duration(microseconds: 200),
+                                                  const Duration(microseconds: 200),
                                                   () =>
                                                       getCon.getCurrentAuthor(),
                                                 ).whenComplete(
@@ -435,8 +431,8 @@ class _ProfilePageState extends State<ProfilePage>
                               ),
                               Row(
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
+                                const  Padding(
+                                    padding:  EdgeInsets.only(
                                         left: 12, right: 8),
                                     child: Icon(
                                       Icons.calendar_today,
@@ -446,21 +442,21 @@ class _ProfilePageState extends State<ProfilePage>
                                   Text(
                                     "joined :" +
                                         getCon.currentAuthor.created.readable,
-                                    style: TextStyle(color: Colors.grey),
+                                    style: const TextStyle(color: Colors.grey),
                                   ),
                                 ],
                               ),
-                              Container(
+                             const SizedBox(
                                 height: 4,
                                 width: 6,
                               ),
-                              Container(
+                              SizedBox(
                                 height: 30,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
+                                    const Padding(
+                                      padding: EdgeInsets.only(
                                           left: 12, right: 7, top: 6),
                                       child: Icon(
                                         Icons.link,
@@ -477,14 +473,14 @@ class _ProfilePageState extends State<ProfilePage>
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                               style:
-                                                  TextStyle(color: Colors.grey),
+                                                  const TextStyle(color: Colors.grey),
                                             ),
                                           )
-                                        : SizedBox.shrink(),
+                                        :const SizedBox.shrink(),
                                     Visibility(
                                       visible: _editable,
                                       child: IconButton(
-                                          icon: Icon(
+                                          icon: const Icon(
                                             Icons.edit,
                                           ),
                                           onPressed: () {
@@ -499,7 +495,7 @@ class _ProfilePageState extends State<ProfilePage>
                                                           .text)
                                                   .whenComplete(() {
                                                 Future.delayed(
-                                                    Duration(microseconds: 350),
+                                                 const   Duration(microseconds: 350),
                                                     () {
                                                   getCon.getCurrentAuthor();
                                                 });
@@ -574,16 +570,16 @@ class _ProfilePageState extends State<ProfilePage>
         },
         body:RefreshIndicator(
           onRefresh: ()async{
-           await Future.delayed(Duration(seconds: 2),()=>print('refresh'),);
+           await Future.delayed(const Duration(seconds: 2),()=>print('refresh'),);
           },
-          child: Obx(()=>_postController.userPostLoading.value?Center(child:CircularProgressIndicator(),) :ListView.builder(
-            padding: EdgeInsets.only(top:0),
+          child: Obx(()=>_postController.userPostLoading.value?const Center(child:CircularProgressIndicator(),) :ListView.builder(
+            padding: const EdgeInsets.only(top:0),
               itemCount: _postController.userPostList.length,
               itemBuilder: (context, index) =>
                  _postView(context,index),)
               ),
         )
-      ):CircularProgressIndicator(),
+      ):const CircularProgressIndicator(),
       ),
     );
   }
@@ -592,25 +588,23 @@ class _ProfilePageState extends State<ProfilePage>
       Function onSave, int length) {
     AlertDialog alert = AlertDialog(
       title: Text(_label),
-      content: Container(
-        child: TextFormField(
-          controller: controller,
-          maxLengthEnforcement: MaxLengthEnforcement.enforced,
-          maxLength: length,
-        ),
+      content: TextFormField(
+        controller: controller,
+        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+        maxLength: length,
       ),
       actions: [
         TextButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            child: Text('Discard')),
+            child:const Text('Discard')),
         TextButton(
             onPressed: () {
 
               onSave();
             },
-            child: Text('Save ')),
+            child:const Text('Save ')),
       ],
     );
     showDialog(
@@ -623,7 +617,7 @@ class _ProfilePageState extends State<ProfilePage>
 
   showPhotoAlert(BuildContext context, File _photo, Function onUse) {
     AlertDialog alertA = AlertDialog(
-      content: Container(
+      content: SizedBox(
         width: MediaQuery.of(context).size.width * .7,
         height: MediaQuery.of(context).size.width * .7,
         child: Image.file(
@@ -636,12 +630,12 @@ class _ProfilePageState extends State<ProfilePage>
             onPressed: () {
               Navigator.pop(context);
             },
-            child: Text('Discard')),
+            child:const Text('Discard')),
         TextButton(
             onPressed: () {
               onUse();
             },
-            child: Text('Use')),
+            child:const Text('Use')),
       ],
     );
     showDialog(
@@ -676,13 +670,13 @@ class _ProfilePageState extends State<ProfilePage>
         Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: Material(
-            borderRadius: BorderRadius.all(Radius.circular(12)),
+            borderRadius:const BorderRadius.all(Radius.circular(12)),
             elevation:2,
             child: Container(
               decoration: BoxDecoration(
                 //color: Color(0xfff4f0db), //Color(0xffFFFAF1),
                 color: Theme.of(context).backgroundColor,
-                borderRadius: BorderRadius.all(Radius.circular(12)),
+                borderRadius:const BorderRadius.all(Radius.circular(12)),
               ),
               width: double.infinity,
               child: Column(
@@ -720,11 +714,11 @@ class _ProfilePageState extends State<ProfilePage>
                               children: [
                                 Text(
                                   getCon.currentAuthor.display!,
-                                  style: TextStyle(fontSize: 18,),
+                                  style:const TextStyle(fontSize: 18,),
                                 ),
                                 Text(
                                   getCon.currentAuthor.name!,
-                                  style: TextStyle(color: Colors.grey),
+                                  style:const TextStyle(color: Colors.grey),
                                 ),
                               ],
                             ),
@@ -736,7 +730,7 @@ class _ProfilePageState extends State<ProfilePage>
                       Padding(
                         padding: const EdgeInsets.only(bottom: 18, right: 8),
                         child: IconButton(
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.keyboard_arrow_down,
                               size: 30,
                             ),
@@ -751,22 +745,20 @@ class _ProfilePageState extends State<ProfilePage>
                       ),
                     ],
                   ),
-                  Container(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          left:25, right: 8, top: 8, bottom: 14),
-                      child: Directionality(
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left:25, right: 8, top: 8, bottom: 14),
+                    child: Directionality(
 
-                        textDirection:isEnglish(_postController.userPostList[index].content!)?TextDirection.rtl:TextDirection.ltr,
-                        child: ReadMoreText(
-                          _postController.userPostList[index].content!,
-                          trimLines: 3,
-                          trimMode: TrimMode.Line,
-                          //textAlign: TextAlign.center,
-                          colorClickableText: Colors.indigoAccent,
-                          delimiter: " ..",
-                          style: TextStyle(color:Theme.of(context).shadowColor,fontSize: 20),
-                        ),
+                      textDirection:isEnglish(_postController.userPostList[index].content!)?TextDirection.rtl:TextDirection.ltr,
+                      child: ReadMoreText(
+                        _postController.userPostList[index].content!,
+                        trimLines: 3,
+                        trimMode: TrimMode.Line,
+                        //textAlign: TextAlign.center,
+                        colorClickableText: Colors.indigoAccent,
+                        delimiter: " ..",
+                        style: TextStyle(color:Theme.of(context).shadowColor,fontSize: 20),
                       ),
                     ),
                   ),
@@ -774,7 +766,7 @@ class _ProfilePageState extends State<ProfilePage>
                     padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
                     child: ClipRRect(
                       child: _postController.userPostList[index].image.isValid?
-                      Container(
+                      SizedBox(
                         height: 190,
                         width: double.infinity,
                         child: GestureDetector(
@@ -786,11 +778,11 @@ class _ProfilePageState extends State<ProfilePage>
                               fit: BoxFit.cover,
                               repeat: ImageRepeat.repeat,
                               placeholder: (context, url) =>
-                                  ColoredBox(
+                                  const ColoredBox(
                                     color: Colors.grey,
                                   ),
                               errorWidget: (context, url, error) =>
-                                  ColoredBox(
+                                  const ColoredBox(
                                       color: Colors.grey,
                                       child: Icon(Icons.error)),
                             ),
@@ -806,57 +798,54 @@ class _ProfilePageState extends State<ProfilePage>
                           },
                         ),
                       ) : _postController.userPostList[index].video.isValid?
-                      Container(
+                      SizedBox(
                           height: 200,
                           child: VdPlayer(dataSource: _postController.userPostList[index].video,dataSourceType: BetterPlayerDataSourceType.network,key:GlobalKey(),))
-                          : SizedBox.shrink(),
+                          : const SizedBox.shrink(),
                       borderRadius: BorderRadius.circular(15),
                     ),
                   ),
-                  Container(
-                    //padding: EdgeInsets.only(left: 50),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
 
 
 
-                        TextButton(
-                            onPressed: () {
-                              showModalBottomSheet<dynamic>(
-                                context: context,
-                                backgroundColor: Colors.transparent,
-                                isScrollControlled: true,
-                                builder: (BuildContext buildContext) =>
-                                    CommentPage(focusty: false, postId: _postController.userPostList[index].id!,
-                                        commentsCount:_postController.userPostList[index].commentsCount!),);
-                            },
-                            child: Row(
-                              children: [
+                      TextButton(
+                          onPressed: () {
+                            showModalBottomSheet<dynamic>(
+                              context: context,
+                              backgroundColor: Colors.transparent,
+                              isScrollControlled: true,
+                              builder: (BuildContext buildContext) =>
+                                  CommentPage(focusty: false, postId: _postController.userPostList[index].id!,
+                                      commentsCount:_postController.userPostList[index].commentsCount!),);
+                          },
+                          child: Row(
+                            children: [
 
-                                FaIcon(
-                                  FontAwesomeIcons.solidComment,
-                                  color:Colors.grey,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 6, top: 6),
-                                  child:_postController.userPostList[index].commentsCount==0?SizedBox.shrink():Text(_postController.userPostList[index].commentsCount.toString(), style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500),),
-                                ),
-                              ],
-                            )),
-                        Container(
-                          width: 2,
-                        ),
-                        LikeButton(
-                          onTap:onTap,
-                          isLiked: _postController.userPostList[index].liked,
-                          likeCount: _postController.userPostList[index].likesCount,
-                        ),
-                      ],
-                    ),
+                              const FaIcon(
+                                FontAwesomeIcons.solidComment,
+                                color:Colors.grey,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 6, top: 6),
+                                child:_postController.userPostList[index].commentsCount==0?const SizedBox.shrink():Text(_postController.userPostList[index].commentsCount.toString(), style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500),),
+                              ),
+                            ],
+                          )),
+                      Container(
+                        width: 2,
+                      ),
+                      LikeButton(
+                        onTap:onTap,
+                        isLiked: _postController.userPostList[index].liked,
+                        likeCount: _postController.userPostList[index].likesCount,
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -884,7 +873,7 @@ class _ProfilePageState extends State<ProfilePage>
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColor,
         border: Border.all(color: Colors.white,),
-        borderRadius: BorderRadius.only(
+        borderRadius:const BorderRadius.only(
           topLeft: Radius.circular(15),
           topRight: Radius.circular(15),
         ),
@@ -899,7 +888,7 @@ class _ProfilePageState extends State<ProfilePage>
             ),
             InkWell(
                 onTap: () {},
-                child: Container(
+                child: SizedBox(
                   height: 50,
                   width: double.infinity,
                   child: Row(
@@ -907,7 +896,7 @@ class _ProfilePageState extends State<ProfilePage>
                       Container(
                         width: 20,
                       ),
-                      CircleAvatar(
+                      const CircleAvatar(
                           radius: 15,
                           backgroundColor: Colors.amber,
                           child: Icon(Icons.add)),
@@ -920,7 +909,7 @@ class _ProfilePageState extends State<ProfilePage>
                 )),
             InkWell(
                 onTap: () {},
-                child: Container(
+                child: SizedBox(
                   height: 50,
                   width: double.infinity,
                   child: Row(
@@ -928,7 +917,7 @@ class _ProfilePageState extends State<ProfilePage>
                       Container(
                         width: 20,
                       ),
-                      CircleAvatar(
+                      const CircleAvatar(
                           radius: 15,
                           backgroundColor: Colors.amber,
                           child: Icon(Icons.share_outlined)),
@@ -941,7 +930,7 @@ class _ProfilePageState extends State<ProfilePage>
                 )),
             InkWell(
                 onTap: () {},
-                child: Container(
+                child: SizedBox(
                   height: 50,
                   width: double.infinity,
                   child: Row(
@@ -949,7 +938,7 @@ class _ProfilePageState extends State<ProfilePage>
                       Container(
                         width: 20,
                       ),
-                      CircleAvatar(
+                      const CircleAvatar(
                           radius: 15,
                           backgroundColor: Colors.amber,
                           child: Icon(Icons.bookmark_border)),
@@ -962,7 +951,7 @@ class _ProfilePageState extends State<ProfilePage>
                 )),
             InkWell(
                 onTap: () {},
-                child: Container(
+                child: SizedBox(
                   height: 50,
                   width: double.infinity,
                   child: Row(
@@ -970,7 +959,7 @@ class _ProfilePageState extends State<ProfilePage>
                       Container(
                         width: 20,
                       ),
-                      CircleAvatar(
+                      const CircleAvatar(
                           radius: 15,
                           backgroundColor: Colors.amber,
                           child: Icon(Icons.report_gmailerrorred_outlined)),
@@ -987,6 +976,7 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
+  @override
   void dispose() {
     _editDisplayController!.dispose();
     _editWebsiteController!.dispose();

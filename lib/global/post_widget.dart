@@ -40,7 +40,7 @@ class PostWidget extends StatelessWidget {
     Future getUserThenNavigate(var id)async{
       try {
         _authorController.getUserView(id, _authorController.currentAuthor.id).then((value) =>
-            Navigator.of(context).push(rightCornerSideSlideTransition(Profile(value))),
+            Navigator.of(context).push(rightCornerSideSlideTransition(Profile(GlobalKey(),value))),
         );
       }
       catch(r){

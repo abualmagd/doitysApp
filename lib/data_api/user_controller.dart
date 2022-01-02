@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 import 'package:supabase/supabase.dart';
 
 class AuthorController extends GetxController {
-  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   Rx<Author> _currentAuthor = Rx(Author());
   set currentAuthor(Author value) => _currentAuthor.value = value;
   Author get currentAuthor => _currentAuthor.value;
@@ -59,7 +59,6 @@ class AuthorController extends GetxController {
       _authorView(Author.fromData(result.data));
       authorView=_authorView.value;
       authorViewLoading(false);
-      print(result.data);
       return authorView;
     }else {
       throw FlutterError(result.error!.message);

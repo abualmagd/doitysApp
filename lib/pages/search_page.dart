@@ -5,10 +5,7 @@ import 'package:doitys/models/user_model.dart';
 import 'package:doitys/pages/one_challenge_view.dart';
 import 'package:doitys/pages/one_post_view.dart';
 import 'package:doitys/pages/profile_view.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -21,32 +18,33 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  var _prefs;
+  SharedPreferences? _prefs;
   var auth=AuthUtil();
 
-  var _textController=TextEditingController();
+  final _textController=TextEditingController();
 
   var _isLoading=false;
   var _prefix='';
-  var _suggestions;
+  List? _suggestions;
   bool _searchOption=false;
-  var _resistSuggestion;
+  List? _resistSuggestion;
   var _lastSearch;
    getLastSearch()async{
     _prefs=await SharedPreferences.getInstance();
-    _lastSearch=_prefs.getString('lastSearch')??[];///return the saved last search
+    _lastSearch=_prefs!.getString('lastSearch')??[];///return the saved last search
     _lastSearch=jsonDecode(_lastSearch);
   }
   addToLastSearch(int index){
-     if(!_lastSearch.contains(_suggestions[index]))
-    _lastSearch.insert(0,_suggestions[index]);
+     if(!_lastSearch.contains(_suggestions![index])) {
+       _lastSearch.insert(0,_suggestions![index]);
+     }
    var _last=jsonEncode(_lastSearch);
-   _prefs.setString('lastSearch',_last);
+   _prefs!.setString('lastSearch',_last);
   }
 
   updateLastSearch(){
     var _last=jsonEncode(_lastSearch);
-    _prefs.setString('lastSearch',_last);
+    _prefs!.setString('lastSearch',_last);
   }
   @override
   void initState(){
@@ -58,7 +56,7 @@ class _SearchPageState extends State<SearchPage> {
 
     return Scaffold(
       appBar: AppBar(
-
+            backgroundColor: Theme.of(context).primaryColor,
         elevation: 0.0,
         leading: IconButton(onPressed:(){
           ///close the keyboard
@@ -91,7 +89,7 @@ class _SearchPageState extends State<SearchPage> {
               prefix: _searchOption?Padding(
                 padding: const EdgeInsets.only(bottom:4.0,right: 4),
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 3.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 3.0),
                     width: 50,
                     height: 20,
                     decoration: BoxDecoration(
@@ -100,9 +98,9 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(2.0),
-                      child: Center(child: Text(_prefix,style: TextStyle(fontSize: 12),)),
+                      child: Center(child: Text(_prefix,style: const TextStyle(fontSize: 12),)),
                     )),
-              ):SizedBox.shrink(),
+              ):const Text(' '),
               border: InputBorder.none,
               contentPadding:const EdgeInsets.only(bottom: 10),
             ),
@@ -110,15 +108,15 @@ class _SearchPageState extends State<SearchPage> {
             onChanged:(value){
               if(_suggestions!=null) {
                 _suggestions = _resistSuggestion;
-                if(_prefix==''||_prefix=='people'&&_suggestions[0]['name']!=null) {
-                  var _newSuggestion = _suggestions.where((map) =>
+                if(_prefix==''||_prefix=='people'&&_suggestions![0]['name']!=null) {
+                  var _newSuggestion = _suggestions!.where((map) =>
                   map['name']!.toLowerCase().contains(value.toLowerCase()) ? true : false)
                       .toList();
                   setState(() {
                     _suggestions = _newSuggestion;
                   });
                 }else {
-                  var _newSuggestion = _suggestions.where((map) =>
+                  var _newSuggestion = _suggestions!.where((map) =>
                   map['content']!.toLowerCase().contains(value.toLowerCase())
                       ? true
                       : false)
@@ -139,7 +137,7 @@ class _SearchPageState extends State<SearchPage> {
                 _isLoading=true;
               });
               if(_prefix==''||_prefix=='people'){///search users by name
-                print('search users');
+
                       _suggestions= await auth.searchUsers('%'+_textController.text.toLowerCase()+'%').whenComplete((){
                         setState(() {
                           _isLoading=false;
@@ -149,19 +147,19 @@ class _SearchPageState extends State<SearchPage> {
 
                       }
           if(_prefix=='posts'){
-            print('search posts');
+
                     _suggestions= await auth.searchPosts(_textController.text.toLowerCase()).whenComplete((){
                       setState(() {
                         _isLoading=false;
                       });
                     });
                       _resistSuggestion=_suggestions;
-                        print(_suggestions);
+
                       setState(() {
 
                       });}
           if(_prefix=='challenges') {
-            print('search ch');
+
             _suggestions =
             await auth.searchChallenges(_textController.text.toLowerCase())
                 .whenComplete(() {
@@ -170,7 +168,7 @@ class _SearchPageState extends State<SearchPage> {
               });
             });
             _resistSuggestion = _suggestions;
-              print(_suggestions);
+
             setState(() {
 
             });
@@ -180,7 +178,7 @@ class _SearchPageState extends State<SearchPage> {
         ),
         bottom:_searchOption==false? PreferredSize(
 
-          preferredSize: Size(double.infinity,30),
+          preferredSize: const Size(double.infinity,30),
           child:Column(
             children: [
               Row(
@@ -193,7 +191,7 @@ class _SearchPageState extends State<SearchPage> {
                       _suggestions=_lastSearch;
                     });
                     ///set state the search for users
-                  }, child:Text('last')),
+                  }, child:const Text('last')),
                 TextButton(onPressed:(){
                   setState(() {
                     _prefix='people';
@@ -201,7 +199,7 @@ class _SearchPageState extends State<SearchPage> {
                     _suggestions=null;
                   });
                   ///set state the search for users
-                }, child:Text('people')),
+                }, child:const Text('people')),
                 TextButton(onPressed:(){
                   setState(() {
                     _prefix='posts';
@@ -209,7 +207,7 @@ class _SearchPageState extends State<SearchPage> {
                     _suggestions=null;
                   });
                   ///set state the search for posts
-                }, child:Text('posts')),
+                }, child:const Text('posts')),
                 TextButton(onPressed:(){
                   setState(() {
                     _prefix='challenges';
@@ -217,36 +215,36 @@ class _SearchPageState extends State<SearchPage> {
                     _suggestions=null;
                   });
                   ///set state the search for challenges
-                }, child:Text('challenges')),
+                }, child:const Text('challenges')),
 
               ],),
-              _isLoading?LinearProgressIndicator():SizedBox.shrink(),
+              _isLoading?const LinearProgressIndicator():const SizedBox.shrink(),
             ],
           ),
         ):PreferredSize(child: Container(
-          child: _isLoading?LinearProgressIndicator():SizedBox.shrink() ,
-        ), preferredSize: Size(0,0)),
+          child: _isLoading?const LinearProgressIndicator():const SizedBox.shrink() ,
+        ), preferredSize: const Size(0,0)),
       ),
       body: AnimatedContainer(
-        duration: Duration(microseconds: 600),
+        duration: const Duration(microseconds: 600),
         curve: Curves.bounceInOut,
         child:_suggestions==null?
-            Center():_suggestions.isEmpty?Center(child:Text('No items found',style: TextStyle(fontSize: 25),))
+            const Center():_suggestions!.isEmpty?const Center(child: Text('No items found',style: TextStyle(fontSize: 25),))
             :Column(
               children: [
                 (_prefix=='last')?ListTile(
-                  trailing:IconButton(icon: Icon(Icons.clear),onPressed:(){
+                  trailing:IconButton(icon: const Icon(Icons.clear),onPressed:(){
 
                     setState(() {
                       _lastSearch=[];
                       _suggestions=[];
                     });
                   } ,),
-                  title: Text('Clear the Last Search'),
-                ):SizedBox.shrink(),
+                  title: const Text('Clear the Last Search'),
+                ):const SizedBox.shrink(),
                 Expanded(
                   child: ListView.builder(
-          itemCount: _suggestions.length,
+          itemCount: _suggestions!.length,
                     itemBuilder:(context,index)=>
                      Padding(
                        padding: const EdgeInsets.all(2.0),
@@ -262,22 +260,22 @@ class _SearchPageState extends State<SearchPage> {
                              setState(() {
 
                              });
-                           },icon: Icon(Icons.clear),):SizedBox.shrink(),
-                          leading:_suggestions[index]['type']=='Author'?CircleAvatar(backgroundImage: NetworkImage(_suggestions[index]['avatar'],)):
+                           },icon:const Icon(Icons.clear),):const SizedBox.shrink(),
+                          leading:_suggestions![index]['type']=='Author'?CircleAvatar(backgroundImage: NetworkImage(_suggestions![index]['avatar'],)):
                            const Icon(Icons.article),
-                          title:_suggestions[index]['type']!='Author'? Text(_suggestions[index]['content']):Text(_suggestions[index]['name']),
-                          subtitle: _suggestions[index]['type']=='Author'?Text(_suggestions[index]['display']):Text(''),
+                          title:_suggestions![index]['type']!='Author'? Text(_suggestions![index]['content']):Text(_suggestions![index]['name']),
+                          subtitle: _suggestions![index]['type']=='Author'?Text(_suggestions![index]['display']):const Text(''),
                            onTap:(){
 
                              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context){
-                               if(_suggestions[index]['type']=='Author'){
-                                 Author _author=Author.fromData(_suggestions[index]);
-                                 return Profile(_author);
+                               if(_suggestions![index]['type']=='Author'){
+                                 Author _author=Author.fromData(_suggestions![index]);
+                                 return Profile(GlobalKey(),_author);
                                }
-                               if(_suggestions[index]['type']=='Post'){
-                                 return PostPage(GlobalKey(),_suggestions[index]['id']);
+                               if(_suggestions![index]['type']=='Post'){
+                                 return PostPage(GlobalKey(),_suggestions![index]['id']);
                                }
-                              return  SingelChallenge(key:GlobalKey(),challengeId:_suggestions[index]['id'],);
+                              return  SingelChallenge(key:GlobalKey(),challengeId:_suggestions![index]['id'],);
                              }));
                            addToLastSearch(index);
                             } ,

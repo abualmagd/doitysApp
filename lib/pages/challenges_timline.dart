@@ -47,7 +47,7 @@ class _ChallengePageState extends State<ChallengePage> {
   Future getUserThenNavigate(var id)async{
     try {
       _authorControl.getUserView(id, _authorControl.currentAuthor.id).then((value) =>
-          Navigator.of(context).push(rightCornerSideSlideTransition(Profile(value))),
+          Navigator.of(context).push(rightCornerSideSlideTransition(Profile(GlobalKey(),value))),
       );
     }
     catch(r){

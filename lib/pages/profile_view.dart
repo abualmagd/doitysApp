@@ -20,7 +20,7 @@ import 'package:doitys/formates/date_extension.dart';
 
 class Profile extends StatefulWidget{
   final Author user;
-  Profile(this.user);
+  const Profile(Key? key ,this.user):super(key:key);
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -29,7 +29,6 @@ class Profile extends StatefulWidget{
 class _ProfileState extends State<Profile> {
 
 final numberFormatting=NumberFormatting();
-final _authorController =Get.put(AuthorController());
 final _postController =Get.put(PostController());
 @override
   void initState() {
@@ -54,218 +53,221 @@ final _postController =Get.put(PostController());
               backgroundColor:Theme.of(context).primaryColor,
               pinned: true,
               floating: false,
-              leading: IconButton(icon: Icon(Icons.arrow_back),onPressed: (){
+              leading: IconButton(icon: const Icon(Icons.arrow_back),onPressed: (){
 
-                Navigator.pop(context);///fuck this error
+                Navigator.pop(context);
               },),
               flexibleSpace: AnnotatedRegion<SystemUiOverlayStyle>(
-                value: SystemUiOverlayStyle(
-                  systemNavigationBarColor:const Color(0xfff4f0db),
+                value: const SystemUiOverlayStyle(
+                  systemNavigationBarColor:Color(0xfff4f0db),
                   statusBarColor: Colors.transparent,
                 ),
                 child: FlexibleSpaceBar(
-                  background: Container(
-                    color: Color(0xfff4f0db),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 160, //photo area
-                          child: Stack(children: [
-                            CurvedGround(
-                              height: 145.0,
-                              //photo back container
-                              width: double.infinity,
-                              color:Color(0xffdec19b), key: UniqueKey(),
+                  background: Material(
+                    elevation: .5,
+                    child: Container(
+                      color: context.theme.backgroundColor,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 160, //photo area
+                            child: Stack(children: [
+                              CurvedGround(
+                                height: 145.0,
+                                //photo back container
+                                width: double.infinity,
+                                color:context.theme.primaryColor, key: UniqueKey(),
 
-                            ),
-                            Positioned(
-                              left:MediaQuery.of(context).size.width*.30,
-                              top:30,
-                              child: Padding(
-                                padding: const EdgeInsets.all(18.0),
-                                child: GestureDetector(
-                                  onTap: (){
-                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){
-                                      return ImageView(
-                                          imageUrl:widget.user.avatar,
-                                          index: "0",
-                                          key: UniqueKey()
-                                      );
-                                    }));
-                                  },
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(35),
-                                    child: Container(
-                                      child: Hero(
-                                        tag: "tag" + "2323232".toString(),
-                                        transitionOnUserGestures: true,
-                                        child:CachedNetworkImage(
-                                          imageUrl:
-                                          widget.user.avatar!=null?widget.user.avatar!:' ',
-                                          fit: BoxFit.cover,
-                                          repeat: ImageRepeat.repeat,
-                                          placeholder: (context, url) =>
-                                              ColoredBox(
-                                                color: Colors.grey,
-                                              ),
-                                          errorWidget: (context, url,
-                                              error) =>
-                                              ColoredBox(
+                              ),
+                              Positioned(
+                                left:MediaQuery.of(context).size.width*.30,
+                                top:30,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(18.0),
+                                  child: GestureDetector(
+                                    onTap: (){
+                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){
+                                        return ImageView(
+                                            imageUrl:widget.user.avatar,
+                                            index: "0",
+                                            key: UniqueKey()
+                                        );
+                                      }));
+                                    },
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(35),
+                                      child: SizedBox(
+                                        child: Hero(
+                                          tag: "tag" + "2323232".toString(),
+                                          transitionOnUserGestures: true,
+                                          child:CachedNetworkImage(
+                                            imageUrl:
+                                            widget.user.avatar!=null?widget.user.avatar!:' ',
+                                            fit: BoxFit.cover,
+                                            repeat: ImageRepeat.repeat,
+                                            placeholder: (context, url) =>
+                                             const   ColoredBox(
                                                   color: Colors.grey,
-                                                  child: Icon(
-                                                      Icons.error)),
+                                                ),
+                                            errorWidget: (context, url,
+                                                error) =>
+                                             const   ColoredBox(
+                                                    color: Colors.grey,
+                                                    child: Icon(
+                                                        Icons.error)),
+                                          ),
                                         ),
-                                      ),
-                                      height: 100,
-                                      width: 100,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ]),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 18,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    height: 30,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          widget.user.display!=null?widget.user.display!:'',
-                                          style: TextStyle(fontSize: 24),
-                                        ),
-                                        Container(
-                                          width: 20,
-                                          height: 2,
-                                        ),
-                                       FollowingButton(followed: _authorController.authorView.followed,userId: _authorController.authorView.id,),
-
-
-                                      ],
-                                    ),
-                                  ),
-                                  Text(
-                                    widget.user.name!,
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 12,left: 12),
-                              child: Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(top:4,bottom: 4),
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width*.80,
-                                      child: Text(
-                                        widget.user.bio!=null?widget.user.bio!:"",
-                                        style: TextStyle(fontSize: 15),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
+                                        height: 100,
+                                        width: 100,
                                       ),
                                     ),
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
-                            Container(
-                              height: 4,
-                            ),
-                            Row(
-                              children: [
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.only(left: 12, right: 8),
-                                  child: Icon(
-                                    Icons.calendar_today,
-                                    size: 14,
-                                  ),
+                            ]),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 18,
                                 ),
-                                Text(
-                                  "joined "+widget.user.created.readable,
-                                  style: TextStyle(color: Colors.grey),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      height: 30,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            widget.user.display!=null?widget.user.display!:'',
+                                            style: const TextStyle(fontSize: 24),
+                                          ),
+                                          const SizedBox(
+                                            width: 20,
+                                            height: 2,
+                                          ),
+                                         FollowingButton(followed: widget.user.followed!,userId:  widget.user.id!,),
+
+
+                                        ],
+                                      ),
+                                    ),
+                                    Text(
+                                      widget.user.name!,
+                                      style: const TextStyle(color: Colors.grey),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            Container(
-                              height: 4,
-                              width: 6,
-                            ),
-                            Container(
-                              height: 30,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 12,left: 12),
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(top:4,bottom: 4),
+                                      child: SizedBox(
+                                        width: MediaQuery.of(context).size.width*.80,
+                                        child: Text(
+                                          widget.user.bio!=null?widget.user.bio!:"",
+                                          style: const TextStyle(fontSize: 15),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                height: 4,
+                              ),
+                              Row(
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 12, right: 7, top: 6),
+                                const  Padding(
+                                    padding:
+                                    EdgeInsets.only(left: 12, right: 8),
                                     child: Icon(
-                                      Icons.link,
+                                      Icons.calendar_today,
                                       size: 14,
                                     ),
                                   ),
-                                  Text(
-                                    widget.user.website!=null? widget.user.website!:'',
-                                    style: TextStyle(color: Colors.grey),
+                                Text(
+                                    "joined "+widget.user.created.readable,
+                                    style:const TextStyle(color: Colors.grey),
                                   ),
                                 ],
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 14, bottom: 8, right: 8, top: 8),
-                              child: Row(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(_followers),
-                                      Container(
-                                        width: 6,
-                                      ),
-                                      const Text(
-                                        "Followers",
-                                        style: TextStyle(color: Colors.grey),
-                                      ),
-                                    ],
-                                  ),
-                                  Container(
-                                    width: 14,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(_following),
-                                      Container(
-                                        width: 6,
-                                      ),
-                                      const Text(
-                                        "Following",
-                                        style: TextStyle(color: Colors.grey),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                              const SizedBox(
+                                height: 4,
+                                width: 6,
                               ),
-                            ),
-                            Container(
-                              height:5,
-                            ),
+                              SizedBox(
+                                height: 30,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 12, right: 7, top: 6),
+                                      child: Icon(
+                                        Icons.link,
+                                        size: 14,
+                                      ),
+                                    ),
+                                    Text(
+                                      widget.user.website!=null? widget.user.website!:'',
+                                      style: const TextStyle(color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 14, bottom: 8, right: 8, top: 8),
+                                child: Row(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(_followers),
+                                        Container(
+                                          width: 6,
+                                        ),
+                                        const Text(
+                                          "Followers",
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                      ],
+                                    ),
+                                    Container(
+                                      width: 14,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(_following),
+                                        Container(
+                                          width: 6,
+                                        ),
+                                        const Text(
+                                          "Following",
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                height:5,
+                              ),
 
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -277,7 +279,7 @@ final _postController =Get.put(PostController());
         body:GetX<PostController>(
           builder: (GetxController controller) {
             if(_postController.looding.value==true){
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }else {
               if (_postController.error.value != true) {
                 return MediaQuery.removePadding(
@@ -295,7 +297,7 @@ final _postController =Get.put(PostController());
                 );
 
               }
-              return Center(child: Text('error'));
+              return const Center(child: Text('error'));
             }
           },),
 
@@ -327,13 +329,13 @@ Widget _postView(BuildContext context,int index,var snapshot) {
       Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: Material(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
+          borderRadius: const BorderRadius.all(Radius.circular(12)),
           elevation:2,
           child: Container(
             decoration: BoxDecoration(
               //color: Color(0xfff4f0db), //Color(0xffFFFAF1),
               color: Theme.of(context).backgroundColor,
-              borderRadius: BorderRadius.all(Radius.circular(12)),
+              borderRadius: const BorderRadius.all(Radius.circular(12)),
             ),
             width: double.infinity,
             child: Column(
@@ -371,11 +373,11 @@ Widget _postView(BuildContext context,int index,var snapshot) {
                             children: [
                               Text(
                                 widget.user.display!,
-                                style: TextStyle(fontSize: 18,),
+                                style: const TextStyle(fontSize: 18,),
                               ),
                               Text(
                                 widget.user.name!,
-                                style: TextStyle(color: Colors.grey),
+                                style: const TextStyle(color: Colors.grey),
                               ),
                             ],
                           ),
@@ -387,7 +389,7 @@ Widget _postView(BuildContext context,int index,var snapshot) {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 18, right: 8),
                       child: IconButton(
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.keyboard_arrow_down,
                             size: 30,
                           ),
@@ -402,22 +404,20 @@ Widget _postView(BuildContext context,int index,var snapshot) {
                     ),
                   ],
                 ),
-                Container(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left:25, right: 8, top: 8, bottom: 14),
-                    child: Directionality(
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left:25, right: 8, top: 8, bottom: 14),
+                  child: Directionality(
 
-                      textDirection:isEnglish(snapshot[index].content!)?TextDirection.rtl:TextDirection.ltr,
-                      child: ReadMoreText(
-                        snapshot[index].content!,
-                        trimLines: 3,
-                        trimMode: TrimMode.Line,
-                        //textAlign: TextAlign.center,
-                        colorClickableText: Colors.indigoAccent,
-                        delimiter: " ..",
-                        style: TextStyle(color:Theme.of(context).shadowColor,fontSize: 20),
-                      ),
+                    textDirection:isEnglish(snapshot[index].content!)?TextDirection.rtl:TextDirection.ltr,
+                    child: ReadMoreText(
+                      snapshot[index].content!,
+                      trimLines: 3,
+                      trimMode: TrimMode.Line,
+                      //textAlign: TextAlign.center,
+                      colorClickableText: Colors.indigoAccent,
+                      delimiter: " ..",
+                      style: TextStyle(color:Theme.of(context).shadowColor,fontSize: 20),
                     ),
                   ),
                 ),
@@ -425,7 +425,7 @@ Widget _postView(BuildContext context,int index,var snapshot) {
                   padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
                   child: ClipRRect(
                     child: snapshot[index].image!=null?
-                    Container(
+                    SizedBox(
                       height: 190,
                       width: double.infinity,
                       child: GestureDetector(
@@ -437,11 +437,11 @@ Widget _postView(BuildContext context,int index,var snapshot) {
                             fit: BoxFit.cover,
                             repeat: ImageRepeat.repeat,
                             placeholder: (context, url) =>
-                                ColoredBox(
+                                const ColoredBox(
                                   color: Colors.grey,
                                 ),
                             errorWidget: (context, url, error) =>
-                                ColoredBox(
+                                const ColoredBox(
                                     color: Colors.grey,
                                     child: Icon(Icons.error)),
                           ),
@@ -457,56 +457,53 @@ Widget _postView(BuildContext context,int index,var snapshot) {
                         },
                       ),
                     ) : snapshot[index].video!=null?
-                    Container(
+                    SizedBox(
                         height: 200,
                         child: VdPlayer(dataSource: snapshot[index].video,dataSourceType: BetterPlayerDataSourceType.network,key:GlobalKey(),))
-                        : SizedBox.shrink(),
+                        : const SizedBox.shrink(),
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
-                Container(
-                  //padding: EdgeInsets.only(left: 50),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
 
 
 
-                      TextButton(
-                          onPressed: () {
-                            showModalBottomSheet<dynamic>(
-                              context: context,
-                              backgroundColor: Colors.transparent,
-                              isScrollControlled: true,
-                              builder: (BuildContext buildContext) =>
-                                  CommentPage(commentsCount:snapshot[index].commentsCount, postId:snapshot[index].id, focusty: false,),);
-                          },
-                          child: Row(
-                            children: [
+                    TextButton(
+                        onPressed: () {
+                          showModalBottomSheet<dynamic>(
+                            context: context,
+                            backgroundColor: Colors.transparent,
+                            isScrollControlled: true,
+                            builder: (BuildContext buildContext) =>
+                                CommentPage(commentsCount:snapshot[index].commentsCount, postId:snapshot[index].id, focusty: false,),);
+                        },
+                        child: Row(
+                          children: [
 
-                              FaIcon(
-                                FontAwesomeIcons.solidComment,
-                                color:Colors.grey,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 6, top: 6),
-                                child:snapshot[index].commentsCount==0?SizedBox.shrink():Text(snapshot[index].commentsCount.toString(), style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500),),
-                              ),
-                            ],
-                          )),
-                      Container(
-                        width: 2,
-                      ),
-                      LikeButton(
-                        onTap:onTap,
-                        isLiked: snapshot[index].liked,
-                        likeCount: snapshot[index].likesCount,
-                      ),
-                    ],
-                  ),
+                            const FaIcon(
+                              FontAwesomeIcons.solidComment,
+                              color:Colors.grey,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 6, top: 6),
+                              child:snapshot[index].commentsCount==0?const SizedBox.shrink():Text(snapshot[index].commentsCount.toString(), style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500),),
+                            ),
+                          ],
+                        )),
+                    Container(
+                      width: 2,
+                    ),
+                    LikeButton(
+                      onTap:onTap,
+                      isLiked: snapshot[index].liked,
+                      likeCount: snapshot[index].likesCount,
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -533,7 +530,7 @@ Widget _postSettingSheet(BuildContext context) {
     decoration: BoxDecoration(
       color: Theme.of(context).primaryColor,
       border: Border.all(color: Colors.white,),
-      borderRadius: BorderRadius.only(
+      borderRadius: const BorderRadius.only(
         topLeft: Radius.circular(15),
         topRight: Radius.circular(15),
       ),
@@ -545,7 +542,7 @@ Widget _postSettingSheet(BuildContext context) {
         children: [
           InkWell(
               onTap: () {},
-              child: Container(
+              child: SizedBox(
                 height: 50,
                 width: double.infinity,
                 child: Row(
@@ -553,7 +550,7 @@ Widget _postSettingSheet(BuildContext context) {
                     Container(
                       width: 20,
                     ),
-                    CircleAvatar(
+                    const CircleAvatar(
                         radius: 15,
                         backgroundColor: Colors.amber,
                         child: Icon(Icons.share_outlined)),
@@ -566,7 +563,7 @@ Widget _postSettingSheet(BuildContext context) {
               )),
           InkWell(
               onTap: () {},
-              child: Container(
+              child: SizedBox(
                 height: 50,
                 width: double.infinity,
                 child: Row(
@@ -574,7 +571,7 @@ Widget _postSettingSheet(BuildContext context) {
                     Container(
                       width: 20,
                     ),
-                    CircleAvatar(
+                    const CircleAvatar(
                         radius: 15,
                         backgroundColor: Colors.amber,
                         child: Icon(Icons.bookmark_border)),
@@ -587,7 +584,7 @@ Widget _postSettingSheet(BuildContext context) {
               )),
           InkWell(
               onTap: () {},
-              child: Container(
+              child: SizedBox(
                 height: 50,
                 width: double.infinity,
                 child: Row(
@@ -595,7 +592,7 @@ Widget _postSettingSheet(BuildContext context) {
                     Container(
                       width: 20,
                     ),
-                    CircleAvatar(
+                    const CircleAvatar(
                         radius: 15,
                         backgroundColor: Colors.amber,
                         child: Icon(Icons.report_gmailerrorred_outlined)),
@@ -614,9 +611,9 @@ Widget _postSettingSheet(BuildContext context) {
 }
 
 class FollowingButton extends StatefulWidget {
-  final userId;
-  final followed;
-  const FollowingButton({Key? key, this.userId, this.followed}) : super(key: key);
+  final String userId;
+  final bool followed;
+  const FollowingButton({Key? key, required this.userId, required this.followed}) : super(key: key);
 
   @override
   _FollowingButtonState createState() => _FollowingButtonState();
@@ -624,7 +621,7 @@ class FollowingButton extends StatefulWidget {
 
 class _FollowingButtonState extends State<FollowingButton> {
 
-  var _authorController=Get.put(AuthorController());
+  final _authorController=Get.put(AuthorController());
   var _followed=false;
   @override
   void initState() {
@@ -645,7 +642,7 @@ class _FollowingButtonState extends State<FollowingButton> {
     return   Padding(
       padding: const EdgeInsets.only(right:8),
       child: AnimatedContainer(
-        duration: Duration(milliseconds:200),
+        duration: const Duration(milliseconds:200),
         child: Material(
           borderRadius: BorderRadius.circular(8),
           child: InkWell(
@@ -669,15 +666,15 @@ class _FollowingButtonState extends State<FollowingButton> {
               height: 30,
               width: 80,
               decoration: BoxDecoration(
-                color:_followed?Color(0xfff4f0db):Colors.blue,/// following or non followed
+                color:_followed?const Color(0xfff4f0db):Colors.blue,/// following or non followed
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                     color: Colors.white
                 ),
               ),
-              child: Center(child:_followed?Text("Following",style: TextStyle(
+              child: Center(child:_followed?const Text("Following",style: TextStyle(
                 fontSize:16,
-              ),):Text("Follow",style: TextStyle(
+              ),):const Text("Follow",style: TextStyle(
                 fontSize:18,
               ),)),
             ),
